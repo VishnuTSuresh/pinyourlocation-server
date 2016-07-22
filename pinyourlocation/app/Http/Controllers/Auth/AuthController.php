@@ -71,6 +71,7 @@ class AuthController extends Controller
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
+            'token' => str_random(32),
         ]);
         $code=new VerificationCode;
         $code->code=str_random(64);

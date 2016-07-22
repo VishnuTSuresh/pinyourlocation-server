@@ -1,6 +1,7 @@
 Dim FSO
 Path = "C:\visualiq\pinyourlocation"
 ZipFile=Path & "\setupfiles.zip"
+Token = "{{$token}}"
 Set FSO = CreateObject("Scripting.FileSystemObject")
 If NOT (FSO.FolderExists(Path)) Then
 	FSO.CreateFolder(Path)
