@@ -8,8 +8,8 @@
         <div class="panel panel-default">
             <div class="panel-heading">Where will you be working today?</div>
             <div class="panel-body">
-                
-                    <form action="pinyourlocation/location{{is_numeric($location->id)?'/'.$location->id:''}}" method="post">
+
+                    <form action="location{{is_numeric($location->id)?'/'.$location->id:''}}" method="post">
                     <div class="row">
                         <input type="hidden" name="_token" value="{{{ csrf_token() }}}" />
                         @if(is_numeric($location->id))
@@ -38,12 +38,7 @@
                             </span>
                         </div>
                         @else
-                        <div class="input-group">
                             <input type="text" name="description" class="form-control" placeholder="Leave a comment if you like">
-                            <span class="input-group-btn">
-                                <button title="Submit Comment" type='submit' name="location" value="{{$location->location}}" class="btn btn-default"><span class="glyphicon glyphicon-comment"></span></button>
-                            </span>
-                        </div>
                         @endif
                         </div>
                     </div>
@@ -51,11 +46,56 @@
             </div>
         </div>
     </div>
+    <div class='col-sm-6 col-md-7 col-lg-8'>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+              Do you have any future plans?
+            </div>
+            <div class="panel-body">
+                <form action="location" method="post">
+                  <input type="hidden" name="_token" value="{{{ csrf_token() }}}" />
+                  <div class="row">
+                    <div class="col-sm-7">
+                      <div class="input-daterange input-group input-group-justified" id="datepicker">
+                          <input type="text" class="form-control" />
+                          <span class="input-group-addon">to</span>
+                          <input type="text" class="form-control" />
+                      </div>
+                    </div>
+                    <div class="col-sm-5">
+                      <div class="btn-group btn-group-justified btn-group-lg" role="group">
+                          <div class="btn-group" role="group">
+                              <button type='submit' name="location" value="home" class="btn btn-default"><span class="glyphicon glyphicon-home"></span> Home</button>
+                          </div>
+                          <div class="btn-group" role="group">
+                              <button type='submit' name="location" value="office" class="btn btn-default"><span class="glyphicon glyphicon-briefcase"></span> Office</button>
+                          </div>
+                          <div class="btn-group" role="group">
+                              <button type='submit' name="location" value="leave" class="btn btn-default"><span class="glyphicon glyphicon-off"></span> Leave</button>
+                          </div>
+                      </div>
+                    </div>
+                  </div>
+                  <br />
+                  <div class="row">
+                    <div class="col-sm-12">
+                      <input type="text" name="description" class="form-control" placeholder="Leave a comment if you like">
+                    </div>
+                  </div>
+                </form>
+                <script>
+                $('.input-daterange').datepicker({
+                  startDate:new Date()
+                });
+                </script>
+            </div>
+        </div>
+    </div>
 </div>
 <div class="row">
     <div class='col-sm-12'>
         <div class="panel panel-default">
-            <div class="panel-heading">My History</div>
+            <div class="panel-heading">Your History</div>
             <div class="panel-body">
                 <div id="myhistory"></div>
                 <style>
@@ -83,7 +123,7 @@
 
                     .q5 {
                         background: #ac2925;
-                        fill: #ac2925; 
+                        fill: #ac2925;
                     }
 
                     .q6 {
@@ -142,7 +182,7 @@
                 <script>
                 $(document).ready(function () {
                     var values = { "office": 1, "home": 2, "leave": 3, "x": 4, "holiday": 5, "Planned leave": 6, "Planned home": 7, "Planned office": 8, "weekend": 9 };
-                    $.getJSON("pinyourlocation/location").done(function (data) {
+                    $.getJSON("location").done(function (data) {
                         function tm(date) {
                             return moment(date, "YYYY-MM-DD");
                         }
@@ -181,7 +221,7 @@
                                 ordered[year] = ordered[year] || {};
                                 ordered[year][month]=ordered[year][month]||{};
                                 for (var m = moment(a); m.isBefore(b); m.add(1, 'days')) {
-                                    
+
                                     if(m.day()===0||m.day()===6){
                                         ordered[year][month][m.unix()]= values["weekend"];
                                     }
@@ -190,7 +230,7 @@
                                             ordered[year][month][m.unix()]=values["x"]
                                         }
                                     }
-                                     
+
                                 }
                                 var monthdiv = $("<div class='history-month'></div>");
                                 yeardiv.append(monthdiv);

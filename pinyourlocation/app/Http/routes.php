@@ -13,7 +13,7 @@
 
 Route::auth();
 
-Route::get('/', 'HomeController@index');
+//Route::get('/', 'HomeController@index');
 Route::get('/verify/{id}/{token}', 'Auth\NoGuardController@verify');
 Route::group(['prefix' => 'admin', 'middleware' => ['role:admin']], function() {
     Route::get('/', 'AdminController@index');
@@ -22,7 +22,7 @@ Route::get('/install',['middleware' => ['role:verified'], 'uses' => 'HomeControl
 
 
 
-Route::group(['prefix' => 'pinyourlocation'], function() {
+//Route::group(['prefix' => 'pinyourlocation'], function() {
     Route::get('/', 'PinYourLocation\IndexController@index');
     Route::resource('location', 'PinYourLocation\LocationController');
-});
+//});
