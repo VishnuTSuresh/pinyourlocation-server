@@ -9,6 +9,9 @@ use App\Http\Controllers\Controller;
 use App\PinnedLocation;
 use Auth;
 use Carbon\Carbon;
+use Mail;
+use App\Role;
+use Session;
 
 class LocationController extends Controller
 {
@@ -20,7 +23,7 @@ class LocationController extends Controller
     public function index()
     {
         return Auth::user()->pinned_locations()->orderBy('date', 'asc')->get()->makeHidden(
-            ['created_at','updated_at','description','user_id']
+            ['created_at','updated_at','user_id']
         )->toJson();
     }
 
@@ -43,6 +46,9 @@ class LocationController extends Controller
     public function store(Request $request)
     {
         // print_r('hello');
+        $this->validate($request, [
+            'location' => 'required'
+        ]);
         $p=new PinnedLocation;
         $p->location = $request->input('location');
         $p->description = $request->input('description');
@@ -53,7 +59,44 @@ class LocationController extends Controller
     public function insert(Request $request)
     {
         // print_r('hello');
-        
+        $this->validate($request, [
+            'from' => 'required|date_format:m/d/Y',
+            'to' => 'required|date_format:m/d/Y|after:from',
+            'location' => 'required'
+        ]);
+        $from=Carbon::createFromFormat('m/d/Y', $request->input('from'))->startOfDay();
+        $to=Carbon::createFromFormat('m/d/Y', $request->input('to'))->startOfDay();
+        $now=Carbon::today();
+        if($from->lte($to)){
+            if($from->lt($now)){
+                Mail::send('emails.request', [
+                        'from' => $from,
+                        'to' => $to->min($now),
+                        'name' => Auth::user()->name,
+                        'email' => Auth::user()->email,
+                        'location' => $request->input('location'),
+                        'description' => $request->input('description')
+                    ], function ($m){
+                    $m->from('pinyourlocation@visualiq.com', 'PinYourLocation Admin');
+                    foreach (Role::where("name","admin")->first()->users as $adminuser) {
+                        $m->to($adminuser->email, $adminuser->name);
+                    }
+                    $m->subject('Location change request');
+                });
+                Session::flash('mailsent', true);
+            }
+            for($date=$from->max(Carbon::tomorrow());$date->lte($to);$date->addDay()){
+                $p=Auth::user()->pinned_locations()->firstOrNew(['date' =>$date]);
+                if($request->input('location')==="office"){
+                    $p->delete();
+                }else{
+                    $p->location = $request->input('location');
+                    $p->description = $request->input('description');
+                    $p->date = $date;
+                    Auth::user()->pinned_locations()->save($p);
+                }
+            }
+        }
         return back();
     }
     /**

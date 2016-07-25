@@ -4,6 +4,24 @@
 <div class="container">
 @if(Entrust::hasRole('verified'))
 <div class="row">
+    <div class='col-sm-12'>
+    @if (count($errors) > 0)
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+    @if (Session::get('mailsent'))
+        <div class="alert alert-success">
+            Mail has been sent successfully
+        </div>
+    @endif
+    </div>
+</div>
+<div class="row">
     <div class='col-sm-6 col-lg-4 col-md-5'>
         <div class="panel panel-default">
             <div class="panel-heading">Where will you be working today?</div>
@@ -49,7 +67,7 @@
     <div class='col-sm-6 col-md-7 col-lg-8'>
         <div class="panel panel-default">
             <div class="panel-heading">
-              Do you have any future plans?
+              Do you have any future plans? Or, would you like to request a change in your history?
             </div>
             <div class="panel-body">
                 <form action="locations" method="post">
@@ -57,9 +75,9 @@
                   <div class="row">
                     <div class="col-sm-7">
                       <div class="input-daterange input-group input-group-justified" id="datepicker">
-                          <input type="text" class="form-control" name="from" />
+                          <input type="text" class="form-control" name="from" placeholder="From"/>
                           <span class="input-group-addon">to</span>
-                          <input type="text" class="form-control" name="to" />
+                          <input type="text" class="form-control" name="to" placeholder="To"/>
                       </div>
                     </div>
                     <div class="col-sm-5">
@@ -85,7 +103,7 @@
                 </form>
                 <script>
                 $('.input-daterange').datepicker({
-                  startDate:new Date()
+                  
                 });
                 </script>
             </div>
@@ -103,39 +121,30 @@
                         background: #5cb85c;
                         fill: #5cb85c;
                     }
-
-                    .q2 {
-                        /*home*/
+                    .q2 {/*home*/
                         background: #f0ad4e;
                         fill: #f0ad4e;
                     }
-
-                    .q3 {
-                        /*leave*/
+                    .q3 {/*leave*/
                         background:  #ac2925;
                         fill:  #ac2925;
                     }
-
                     .q4 {/* not marked*/
                         background: #d9534f;
                         fill: #d9534f;
                     }
-
                     .q5 {
                         background: #ac2925;
                         fill: #ac2925;
                     }
-
                     .q6 {
                         background: red;
                         fill: red;
                     }
-
                     .q7 {
                         background: yellow;
                         fill: yellow;
                     }
-
                     .q8 {
                         background: #ededed;
                         fill: #ededed;
@@ -197,22 +206,40 @@
                         minyear = minyear.year();
                         maxyear = maxyear.year();
                         var ordered = {};
+                        var description={};
+                        var leave={
+
+                        },home={
+
+                        },x={
+
+                        };
                         _.each(_.groupBy(data, function (location) {
                             return moment(location.date, "YYYY-MM-DD").year();
                         }), function (data, year) {
-
+                            leave[year]=0;
+                            home[year]=0;
+                            x[year]=0;
                             _.each(_.groupBy(data, function (location) {
                                 return moment(location.date, "YYYY-MM-DD").month();
                             }), function (data, month) {
                                 ordered[year] = ordered[year] || {};
                                 ordered[year][month]={};
                                 for (var d in data) {
+                                    if(data[d].location==="leave"){
+                                        leave[year]++;
+                                    }
+                                    if(data[d].location==="home"){
+                                        home[year]++;
+                                    }
                                     ordered[year][month][moment(data[d].date, "YYYY-MM-DD").unix()] = values[data[d].location];
+                                    description[moment(data[d].date, "YYYY-MM-DD").unix()]=data[d].description;
                                 }
                                 //ordered[year][month] = data;
                             });
                         });
                         for (var year = maxyear; year >= minyear; year--) {
+                            
                             var yeardiv = $("<div class='col-md-12'><h4>" + year + "</h4></div>");
                             $("#myhistory").append(yeardiv);
                             for (var month = 0; month < 12; month++) {
@@ -228,6 +255,7 @@
                                     if(m.isSameOrBefore(moment())){
                                         if(ordered[year][month][m.unix()]===undefined){
                                             ordered[year][month][m.unix()]=values["x"]
+                                            x[year]++;
                                         }
                                     }
 
@@ -260,38 +288,19 @@
                                         filled: {
                                             format: function format(arg) {
                                                 var status = ["office", "home", "leave", "x", "holiday", "Planned leave", "Planned home", "Planned office", "weekend"];
-                                                return status[arg.count - 1] + " on " + arg.date;
+                                                var d=description[moment(arg.date).unix()];
+                                                return status[arg.count - 1]+(d?" ("+d+")":"") + " on " + arg.date;
                                             }
                                         }
-                                    },
-                                    onClick: function(date) {
-                                        enddate = date;
-                                        startdate = !d3.event.shiftKey ? date : startdate ? startdate : date; //Multi select with Shift and mouseclick.
-                                        var firstdate = Math.min(startdate, enddate);
-                                        var lastdate = Math.max(startdate, enddate);
-                                        cal.highlight(d3.time.day.range(firstdate, lastdate+ONEDAY).filter(function(day){
-                                            return day.getDay() % 6 != 0; //do not pick weekends.
-                                        }));
-                                        //filter selected dates from full data
-                                        var newdates = data.slice(moment(firstdate).dayOfYear() - 1, moment(lastdate).dayOfYear());
-                                        var status = {"home": [], "office": [], "leave": [], "wfh": [], "holiday":[], "x": [], "future": [], "Planned home":[], "Planned leave": [], "Planned office": []};
-                                        newdates.forEach(function(element) {
-                                            var isfuture = new Date(element.date) > new Date();
-                                            if (element.type != "weekend") {
-                                                if (element.type == "holiday") {
-                                                    status.holiday.push(element);
-                                                } else if (isfuture && element.location == "x") {
-                                                    status.future.push(element);
-                                                } else {
-                                                    status[element.location].push(element);
-                                                }
-                                            }
-                                        });
-                                        //$("#leaveplan").html(printLeavePlan(status));
-                                        //$("#reviewcommeninput").focus();
-                                    },
+                                    }
                                 });
                             }
+                            var legenddiv =
+    $('<div class="col-md-12"><span title="home: '+home[year]+'"><svg width="10" height="10"><rect class=" graph-rect r2 q2" width="10" height="10"></rect></svg></span>'+
+    ' <span title="leave: '+leave[year]+'"><svg width="10" height="10"><rect class=" graph-rect r2 q3" width="10" height="10"></rect></svg></span>'+
+    ' <span title="unmarked: '+x[year]+'"><svg width="10" height="10"><rect class=" graph-rect r2 q4" width="10" height="10"></rect></svg></span></div>'
+    );
+    $("#myhistory").append(legenddiv);
                         }
                     });
                 });

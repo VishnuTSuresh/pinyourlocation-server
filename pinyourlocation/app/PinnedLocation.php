@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class PinnedLocation extends Model
 {
+    protected $fillable = array('date');
     public function user()
     {
         return $this->belongsTo('App\User');
