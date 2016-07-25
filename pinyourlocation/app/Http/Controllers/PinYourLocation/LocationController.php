@@ -50,7 +50,12 @@ class LocationController extends Controller
         Auth::user()->pinned_locations()->save($p);
         return back();
     }
-
+    public function insert(Request $request)
+    {
+        // print_r('hello');
+        
+        return back();
+    }
     /**
      * Display the specified resource.
      *

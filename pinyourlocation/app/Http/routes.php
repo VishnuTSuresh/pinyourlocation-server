@@ -25,4 +25,5 @@ Route::get('/install',['middleware' => ['role:verified'], 'uses' => 'HomeControl
 //Route::group(['prefix' => 'pinyourlocation'], function() {
     Route::get('/', 'PinYourLocation\IndexController@index');
     Route::resource('location', 'PinYourLocation\LocationController');
+    Route::post('locations', 'PinYourLocation\LocationController@insert');
 //});

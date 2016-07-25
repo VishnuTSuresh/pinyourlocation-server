@@ -52,14 +52,14 @@
               Do you have any future plans?
             </div>
             <div class="panel-body">
-                <form action="location" method="post">
+                <form action="locations" method="post">
                   <input type="hidden" name="_token" value="{{{ csrf_token() }}}" />
                   <div class="row">
                     <div class="col-sm-7">
                       <div class="input-daterange input-group input-group-justified" id="datepicker">
-                          <input type="text" class="form-control" />
+                          <input type="text" class="form-control" name="from" />
                           <span class="input-group-addon">to</span>
-                          <input type="text" class="form-control" />
+                          <input type="text" class="form-control" name="to" />
                       </div>
                     </div>
                     <div class="col-sm-5">
