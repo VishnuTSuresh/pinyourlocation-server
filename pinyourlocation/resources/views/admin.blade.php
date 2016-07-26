@@ -2,6 +2,6 @@
 
 @section('heading', 'Admin')
 
-@section('content')
+@section('entrust-content')
 <p>Admin</p>
 @endsection
