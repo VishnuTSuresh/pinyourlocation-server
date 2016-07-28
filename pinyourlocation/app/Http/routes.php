@@ -27,3 +27,19 @@ Route::get('/install',['middleware' => ['role:verified'], 'uses' => 'HomeControl
     Route::resource('location', 'PinYourLocation\LocationController');
     Route::post('locations', 'PinYourLocation\LocationController@insert');
 //});
+
+
+/*
+|--------------------------------------------------------------------------
+| API routes
+|--------------------------------------------------------------------------
+*/
+
+Route::group(['prefix' => 'api', 'namespace' => 'API'], function () {
+    Route::group(['prefix' => 'v1'], function () {
+        require config('infyom.laravel_generator.path.api_routes');
+    });
+});
+
+
+Route::resource('holidays', 'holidayController');
