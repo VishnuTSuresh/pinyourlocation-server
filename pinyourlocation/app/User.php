@@ -68,4 +68,12 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     {
         return $this->hasMany('App\PinnedLocation');
     }
+    public function followers()
+    {
+        return $this->belongsToMany('App\User', 'followers', 'follow_id', 'user_id')->withTimestamps();
+    }
+    public function following()
+    {
+        return $this->belongsToMany('App\User', 'followers', 'user_id', 'follow_id')->withTimestamps();
+    }
 }

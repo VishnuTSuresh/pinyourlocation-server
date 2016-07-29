@@ -12,20 +12,23 @@
 */
 
 Route::auth();
-
-//Route::get('/', 'HomeController@index');
 Route::get('/verify/{id}/{token}', 'Auth\NoGuardController@verify');
 Route::group(['prefix' => 'admin', 'middleware' => ['role:admin']], function() {
     Route::get('/', 'AdminController@index');
 });
-Route::get('/install',['middleware' => ['role:verified'], 'uses' => 'HomeController@install']);
-
-
+Route::get('/install',['middleware' => ['role:verified'], 'uses' => 'PinYourLocation\IndexController@install']);
 
 //Route::group(['prefix' => 'pinyourlocation'], function() {
-    Route::get('/', 'PinYourLocation\IndexController@index');
-    Route::resource('location', 'PinYourLocation\LocationController');
-    Route::post('locations', 'PinYourLocation\LocationController@insert');
+Route::get('/', 'PinYourLocation\IndexController@index');
+Route::resource('location', 'PinYourLocation\LocationController');
+Route::post('locations', 'PinYourLocation\LocationController@insert');
+Route::get('user/{user}/location', 'UserController@location' );
+Route::get('user/{user}', 'UserController@show' )->middleware('role:manager');
+Route::get('user', 'UserController@index' )->middleware('auth');
+Route::post('user/follow', 'UserController@follow' )->middleware('auth');
+Route::get('manager/', 'ManagerController@index' );
+Route::get('profile/', 'HomeController@profile' );
+
 //});
 
 

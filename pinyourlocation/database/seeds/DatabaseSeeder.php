@@ -24,7 +24,14 @@ class DatabaseSeeder extends Seeder
             $admin->display_name = 'Verified User';
             $admin->description  = 'This user has verified his email and can now access much of the functionality of the app'; // optional
             $admin->save();
-        }   
+        }
+        if(\App\Role::where("name","manager")->count()==0){
+            $admin = new \App\Role();
+            $admin->name         = 'manager';
+            $admin->display_name = 'Manager';
+            $admin->description  = 'A manager can view details about every user'; // optional
+            $admin->save();
+        } 
         // $this->call(UsersTableSeeder::class);
     }
 }

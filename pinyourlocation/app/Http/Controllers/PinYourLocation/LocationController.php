@@ -11,6 +11,7 @@ use Auth;
 use Carbon\Carbon;
 use Mail;
 use App\Role;
+use App\User;
 use Session;
 
 class LocationController extends Controller
@@ -22,7 +23,21 @@ class LocationController extends Controller
      */
     public function index()
     {
-        return Auth::user()->pinned_locations()->orderBy('date', 'asc')->get()->makeHidden(
+        return $this->getlocation(Auth::user());
+    }
+    public function user($userId)
+    {
+        $user=User::findOrFail($userId);
+        if(Auth::user()->hasRole('manager')||$user->id===Auth::user()->id){
+            return $this->getlocation($user);
+        }
+        else{
+            abort(404);
+        }
+    }
+    private function getlocation($user)
+    {
+        return $user->pinned_locations()->orderBy('date', 'asc')->get()->makeHidden(
             ['created_at','updated_at','user_id']
         )->toJson();
     }

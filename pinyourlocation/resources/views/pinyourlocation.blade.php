@@ -112,7 +112,38 @@
     </div>
     <div class="row">
         <div class='col-sm-12'>
-            @include('components.history')
+            <div class="panel panel-default">
+                <div class="panel-heading">You are subscribed to these people</div>
+                <div class="panel-body">
+                    @forelse ($followings as $user)
+                        <?php 
+                            $location = $user->pinned_locations()->where('date',\Carbon\Carbon::today())->first();
+                            if(!$location){
+                                $location = "unmarked";
+                            }else{
+                                $location = $location->location;
+                            }
+                        ?>
+                        <a class="ui image label {{$location}}">
+                            {!! Gravatar::image($user->email) !!}
+                            {{ $user->name }}
+                        </a>
+                    @empty
+                        
+                    @endforelse
+                    <a href="{{url('user')}}">+Follow others</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class='col-sm-12'>
+            <div class="panel panel-default">
+                <div class="panel-heading">Your History</div>
+                <div class="panel-body">
+                        @include('components.history')
+                </div>
+            </div>
         </div>
     </div>
 @else

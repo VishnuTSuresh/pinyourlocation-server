@@ -29,9 +29,8 @@ class HomeController extends Controller
     {
         return view('home');
     }
-    public function install()
+    public function profile()
     {
-        $arr=array("token"=>Auth::user()->token);
-        return response()->view('setup', $arr)->header('Content-Type', "application/vnd.vbscript; charset=utf-8")->header("Content-disposition","attachment; filename=\"setup.vbs\"");
+        return view('profile');
     }
 }

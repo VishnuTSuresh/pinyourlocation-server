@@ -1,6 +1,3 @@
-<div class="panel panel-default">
-    <div class="panel-heading">Your History</div>
-    <div class="panel-body">
         <div id="myhistory"></div>
         <style>
             .q1 {/*office*/
@@ -19,13 +16,27 @@
                 background: #d9534f;
                 fill: #d9534f;
             }
-            .q5 {
+            .q5 { /*holiday*/
                 background: #337ab7;
                 fill: #337ab7;
             }
             .history-month{
                 display: inline-block;
                 vertical-align: top;
+            }
+            .history-legend{
+
+            }
+            .history-legend>span{
+                display:inline-block;
+                width: 15px;
+                height:15px;
+                text-align: center;
+                vertical-align: middle;
+                line-height: 15px;
+                color:white;
+                font-size:10px;
+                cursor:default;
             }
         </style>
         <script>
@@ -35,16 +46,19 @@
         $(document).ready(function () {
             var values = { "office": 1, "home": 2, "leave": 3, "x": 4, "holiday": 5, "Planned leave": 6, "Planned home": 7, "Planned office": 8, "weekend": 9 };
             var location=new Promise(function(resolve,reject){
-                $.getJSON("location").done(function (data) {
+                $.getJSON("/user/{{$user->id}}/location").done(function (data) {
                     resolve(data)
                 });
             });
             var holidays=new Promise(function(resolve,reject){
-                $.getJSON("api/v1/holidays").done(function (data) {
+                $.getJSON("/api/v1/holidays").done(function (data) {
                     resolve(data)
                 });
             });
             Promise.all([location,holidays]).then(function(arg){
+                if(arg[0].length===0){
+                    return ;
+                }
                 var data=arg[0],holidays=arg[1].data,holidayhash={}, minyear = tm(data[0].date),maxyear = tm(data[0].date),hash = {},description={},leave={},home={},x={};
                 _.each(data,function (location) {
                     minyear = moment.min(minyear, tm(location.date));
@@ -127,14 +141,13 @@
                         });
                     }
                     var legenddiv =
-                    $('<div class="col-md-12"><span title="home: '+home[year]+'"><svg width="10" height="10"><rect class=" graph-rect r2 q2" width="10" height="10"></rect></svg></span>'+
-                    ' <span title="leave: '+leave[year]+'"><svg width="10" height="10"><rect class=" graph-rect r2 q3" width="10" height="10"></rect></svg></span>'+
-                    ' <span title="unmarked: '+x[year]+'"><svg width="10" height="10"><rect class=" graph-rect r2 q4" width="10" height="10"></rect></svg></span></div>'
-                    );
-                    $("#myhistory").append(legenddiv);
+                    $(`<div class='history-legend'>
+                        <span title="Home" class="q2">${home[year]}</span><span title="Leave" class="q3">${leave[year]}</span><span title="Unmarked" class="q4">${x[year]}</span>
+                     </div>
+                    `);
+                    yeardiv.find("h4").append(legenddiv);
+                    legenddiv.find('span').tooltip()
                 }
             });
         });
         </script>
-    </div>
-</div>

@@ -28,6 +28,10 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.1/css/bootstrap-datepicker.min.css">
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.1/js/bootstrap-datepicker.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.2/semantic.css">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.2/semantic.min.js"></script>
+
     
     <style>
         body {
@@ -37,6 +41,18 @@
         .fa-btn {
             margin-right: 6px;
         }
+        @unless (Auth::guest())
+            .profile-img{
+                margin-top: -5px;
+                margin-right: 5px;
+                float: left;
+                background: url("{!! Gravatar::src(Auth::user()->email) !!}") 50% 50% no-repeat;
+                background-size: auto 100%; /* Interchange this value depending on prefering width vs. height */
+                width: 30px;
+                height: 30px;
+            }
+        @endunless
+        
     </style>
 </head>
 <body id="app-layout">
@@ -77,16 +93,16 @@
                         @endrole
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                                {{ Auth::user()->name }} <span class="caret"></span>
+                            <div class="img-rounded profile-img"></div>
+                                 {{ Auth::user()->name }} <span class="caret"></span>
                             </a>
-
                             <ul class="dropdown-menu" role="menu">
-                                <li><a href="#"><i class="fa fa-user" aria-hidden="true"></i> Profile</a></li>
+                                <li><a href="profile"><i class="fa fa-user" aria-hidden="true"></i> Profile</a></li>
                                 @role('admin')
                                     <li><a href="{{ url('/admin')}}"><i class="fa fa-user-plus" aria-hidden="true"></i></i> Admin</a></li>
                                 @endrole
                                 @role('manager')
-                                    <li><a href="#"><i class="fa fa-black-tie" aria-hidden="true"></i></i> Manager</a></li>
+                                    <li><a href="{{ url('/manager')}}"><i class="fa fa-black-tie" aria-hidden="true"></i></i> Manager</a></li>
                                 @endrole
                                 <li role="separator" class="divider"></li>
                                 <li><a href="{{ url('/logout') }}"><i class="fa fa-btn fa-sign-out"></i>Logout</a></li>

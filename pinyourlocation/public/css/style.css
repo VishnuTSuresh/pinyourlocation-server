@@ -7,3 +7,27 @@
 .pyl-header .navbar-brand .color-2{
     color:#51CCEE;
 }
+.office {/*office*/
+    background: #5cb85c !important;
+    fill: #5cb85c !important;
+}
+.home {/*home*/
+    background: #f0ad4e !important;
+    fill: #f0ad4e !important;
+}
+.leave {/*leave*/
+    background:  #ac2925 !important;
+    fill:  #ac2925 !important;
+}
+.unmarked {/* not marked*/
+    background: #d9534f !important;
+    fill: #d9534f !important;
+}
+.holiday {
+    background: #337ab7 !important;
+    fill: #337ab7 !important;
+}
+.weekend{
+    background: #ededed !important;
+    fill: #ededed !important;
+}

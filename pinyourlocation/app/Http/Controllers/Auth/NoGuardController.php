@@ -24,7 +24,7 @@ class NoGuardController extends Controller
                 $user->attachRole($admin);
             }
             $user->verification_codes()->delete();
-            return redirect()->action('HomeController@index');
+            return redirect()->action('PinYourLocation\IndexController@index');
         }
         return "Invalid verification code";
     }

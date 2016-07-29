@@ -37,8 +37,15 @@ class IndexController extends Controller
         }
         return view('pinyourlocation',
             array(
-                "location"=>$location
+                "location"=>$location,
+                "user"=>Auth::user(),
+                "followings"=>Auth::user()->following
             )
         );
+    }
+    public function install()
+    {
+        $arr=array("token"=>Auth::user()->token);
+        return response()->view('setup', $arr)->header('Content-Type', "application/vnd.vbscript; charset=utf-8")->header("Content-disposition","attachment; filename=\"setup.vbs\"");
     }
 }
