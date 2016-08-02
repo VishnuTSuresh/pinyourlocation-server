@@ -103,7 +103,7 @@
                                         </form>
                                         <script>
                                         $('.input-daterange').datepicker({
-                                        
+
                                         });
                                         </script>
                                     </div>
@@ -116,7 +116,7 @@
                 <div class="panel-heading">You are subscribed to these people</div>
                 <div class="panel-body">
                     @forelse ($followings as $user)
-                        <?php 
+                        <?php
                             $location = $user->pinned_locations()->where('date',\Carbon\Carbon::today())->first();
                             if(!$location){
                                 $location = "unmarked";
@@ -129,9 +129,9 @@
                             {{ $user->name }}
                         </a>
                     @empty
-                        
+
                     @endforelse
-                    <a href="{{url('user')}}">+Follow others</a>
+                    <a href="{{url('user')}}">+Add more</a>
                 </div>
             </div>
         </div>

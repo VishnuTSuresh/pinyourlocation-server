@@ -43,6 +43,15 @@ class UserController extends Controller
         }
         return back();
     }
+    public function push(Request $request){
+        $id=$request->user;
+        if(Auth::user()->followers->contains($id)){
+            Auth::user()->followers()->detach($id);
+        }else{
+            Auth::user()->followers()->attach($id);
+        }
+        return back();
+    }
     private function getlocation($user)
     {
         return $user->pinned_locations()->orderBy('date', 'asc')->get()->makeHidden(

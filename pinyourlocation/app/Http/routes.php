@@ -26,6 +26,7 @@ Route::get('user/{user}/location', 'UserController@location' );
 Route::get('user/{user}', 'UserController@show' )->middleware('role:manager');
 Route::get('user', 'UserController@index' )->middleware('auth');
 Route::post('user/follow', 'UserController@follow' )->middleware('auth');
+Route::post('user/push', 'UserController@push' )->middleware('auth');
 Route::get('manager/', 'ManagerController@index' );
 Route::get('profile/', 'HomeController@profile' );
 
