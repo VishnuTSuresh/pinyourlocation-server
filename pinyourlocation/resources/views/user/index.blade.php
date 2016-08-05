@@ -4,6 +4,8 @@
 <div class="panel panel-default">
     <div class="panel-heading">Users</div>
     <div class="panel-body">
+      {{\Carbon\Carbon::now()}}
+      <div class="table-responsive">
             <table class="table">
                 <thead>
                 <tr>
@@ -51,7 +53,7 @@
                 @endforeach
                 </tbody>
             </table>
-
+          </div>
     </div>
 </div>
 @endsection
