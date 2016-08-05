@@ -113,7 +113,7 @@
     <div class="row">
         <div class='col-sm-12'>
             <div class="panel panel-default">
-                <div class="panel-heading">You are subscribed to these people</div>
+                <div class="panel-heading">You are following to these people</div>
                 <div class="panel-body">
                     @forelse ($followings as $user)
                         <?php
@@ -131,7 +131,7 @@
                     @empty
 
                     @endforelse
-                    <a href="{{url('user')}}">+Add more</a>
+                    <a href="{{url('user')}}">+Add people</a>
                 </div>
             </div>
         </div>
