@@ -4,7 +4,6 @@
 <div class="panel panel-default">
     <div class="panel-heading">Users</div>
     <div class="panel-body">
-      {{\Carbon\Carbon::now()}}
       <div class="table-responsive">
             <table class="table">
                 <thead>

@@ -141,7 +141,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Your History</div>
                 <div class="panel-body">
-                        @include('components.history')
+                        @include('components.history',['user' => Auth::user()])
                 </div>
             </div>
         </div>

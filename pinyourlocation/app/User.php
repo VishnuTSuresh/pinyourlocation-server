@@ -53,6 +53,13 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         ],
     ];
 
+    protected $dates = [
+        'created_at',
+        'updated_at',
+        'deleted_at',
+        'lastrun'
+    ];
+
     public function entrustPasswordHash() 
     {
         $this->password = Hash::make($this->password);

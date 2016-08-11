@@ -55,31 +55,31 @@ FSO.DeleteFile ZipFile
 
 'write token
 Set objFSO=CreateObject("Scripting.FileSystemObject")
-outFile=Path & "\pinyourlocation-client\token"
+outFile=Path & "\token"
 Set objFile = objFSO.CreateTextFile(outFile,True)
 objFile.Write Token
 objFile.Close
 
 'write start.vbs
 Set objFSO=CreateObject("Scripting.FileSystemObject")
-outFile=Path & "\pinyourlocation-client\start.vbs"
+outFile=Path & "\start.vbs"
 Set objFile = objFSO.CreateTextFile(outFile,True)
-objFile.Write "CreateObject(""Wscript.Shell"").Run ""node.exe cron.js"", 0, True"
+objFile.Write "CreateObject(""Wscript.Shell"").Run ""node.exe start.js"", 0, True"
 objFile.Close
 
 'create shortcut
 Set objShell = WScript.CreateObject("WScript.Shell")
 Set lnk = objShell.CreateShortcut("C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp\start_pinyourlocation.LNK")
 
-lnk.TargetPath = Path & "\pinyourlocation-client\start.vbs"
-lnk.WorkingDirectory =  Path & "\pinyourlocation-client\"
+lnk.TargetPath = Path & "\start.vbs"
+lnk.WorkingDirectory =  Path & "\"
 lnk.Save
 Set lnk = Nothing
 
 Dim objShell
 Set objShell = Wscript.CreateObject("WScript.Shell")
-objShell.CurrentDirectory=Path & "\pinyourlocation-client\"
-objShell.Run Path & "\pinyourlocation-client\start.vbs" 
+objShell.CurrentDirectory=Path & "\"
+objShell.Run Path & "\start.vbs" 
 Set objShell = Nothing
 
 MsgBox("Setup Complete")

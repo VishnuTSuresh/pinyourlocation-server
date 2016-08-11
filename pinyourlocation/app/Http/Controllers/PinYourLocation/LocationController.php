@@ -51,7 +51,34 @@ class LocationController extends Controller
     {
         //
     }
-
+    private function mailFollowers($location,$from,$to)
+    {
+        //user will be `on leave/working from home` `today/tomorrow/` `on date/from date to date`
+        $followers_email=array();
+        $followers_name=array();
+        $first_email;
+        $first_name;
+        foreach (Auth::user()->followers as $key => $follower) {
+            if($key===0){
+                $first_email=$follower->email;
+                $first_name=$follower->name;
+            }else{
+                array_push($followers_email,$follower->email);
+                array_push($followers_name,$follower->name);
+            }
+        }
+        Mail::send('emails.notification', [
+            'user' => Auth::user()->name,
+            'from' => $from,
+            'to' => $to,
+            'location' => $location
+        ], function($m) use($followers_email,$followers_name,$first_email,$first_name){
+            $m->from('pinyourlocation@visualiq.com', 'PinYourLocation Admin');
+            $m->to($first_email,$first_name);
+            $m->bcc($followers_email,$followers_name);
+            $m->subject('Pinyourlocation: '.Auth::user()->name." has a message for you");
+        });
+    }
     /**
      * Store a newly created resource in storage.
      *
@@ -69,6 +96,9 @@ class LocationController extends Controller
         $p->description = $request->input('description');
         $p->date = Carbon::today();
         Auth::user()->pinned_locations()->save($p);
+        if($request->input('location')!=="office"){
+            $this->mailFollowers($request->input('location'),Carbon::today(),false);
+        }
         return back();
     }
     public function insert(Request $request)
@@ -100,6 +130,7 @@ class LocationController extends Controller
                 });
                 Session::flash('mailsent', true);
             }
+            $yettomail=true;
             for($date=$from->max(Carbon::tomorrow());$date->lte($to);$date->addDay()){
                 $p=Auth::user()->pinned_locations()->firstOrNew(['date' =>$date]);
                 if($request->input('location')==="office"){
@@ -109,6 +140,10 @@ class LocationController extends Controller
                     $p->description = $request->input('description');
                     $p->date = $date;
                     Auth::user()->pinned_locations()->save($p);
+                    if($yettomail){
+                        $this->mailFollowers($request->input('location'),$date,$to);
+                        $yettomail=false;
+                    }
                 }
             }
         }
@@ -122,7 +157,7 @@ class LocationController extends Controller
      */
     public function show($id)
     {
-        //
+        return "remove this route";
     }
 
     /**
@@ -149,6 +184,9 @@ class LocationController extends Controller
         $p->location = $request->input('location');
         $p->description = $request->input('description');
         $p->save();
+        if($request->input('location')!=="office"){
+            $this->mailFollowers($request->input('location'),Carbon::today(),false);
+        }
         return back();
     }
 

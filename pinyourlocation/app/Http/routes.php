@@ -10,6 +10,7 @@
 | and give it the controller to call when that URI is requested.
 |
 */
+use App\User;
 
 Route::auth();
 Route::get('/verify/{id}/{token}', 'Auth\NoGuardController@verify');
@@ -22,13 +23,22 @@ Route::get('/install',['middleware' => ['role:verified'], 'uses' => 'PinYourLoca
 Route::get('/', 'PinYourLocation\IndexController@index');
 Route::resource('location', 'PinYourLocation\LocationController');
 Route::post('locations', 'PinYourLocation\LocationController@insert');
+
 Route::get('user/{user}/location', 'UserController@location' );
 Route::get('user/{user}', 'UserController@show' )->middleware('role:manager');
 Route::get('user', 'UserController@index' )->middleware('auth');
 Route::post('user/follow', 'UserController@follow' )->middleware('auth');
 Route::post('user/push', 'UserController@push' )->middleware('auth');
+
 Route::get('manager/', 'ManagerController@index' );
 Route::get('profile/', 'HomeController@profile' );
+Route::get('script/{token}', 'ScriptController@code' );
+
+Route::get('authenticatebytoken/{token}', function ($token) {
+    $user=User::where('token', $token)->firstOrFail();
+    Auth::login($user);
+    return redirect('/');
+} );
 
 //});
 

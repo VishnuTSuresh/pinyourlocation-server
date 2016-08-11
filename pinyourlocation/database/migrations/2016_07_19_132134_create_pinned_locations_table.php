@@ -19,8 +19,8 @@ class CreatePinnedLocationsTable extends Migration
             $table->text('description');
             $table->integer('user_id')->unsigned()->index();
             $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->unique(['date', 'user_id']);
             $table->timestamps();
-            $table->unique(array('date', 'user_id'));
         });
     }
 
