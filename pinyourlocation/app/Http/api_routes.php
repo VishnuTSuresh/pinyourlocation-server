@@ -11,4 +11,4 @@
 
 Route::resource('holidays', 'holidayAPIController');
 Route::post('setoffice', 'PinYourLocation\LocationController@store_office_via_api');
-Route::post('scriptfinish', 'ScriptController@scriptfinish' );
+Route::post('popupshowed', 'ScriptController@popupshowed' );

@@ -45,13 +45,15 @@ isinoffice.then(function(office){
         });
     }
     else{
-        var open = require('open');
-        open(`${base_url}/authenticatebytoken/{{$token}}`);
+        @if ($should_show_popup)
+            var open = require('open');
+            open(`${base_url}/authenticatebytoken/{{$token}}`);
+            request.post({
+                url:`${base_url}/api/v1/popupshowed`,
+                form: {
+                    token:'{{$token}}'
+                }
+            });
+        @endif
     }
-    request.post({
-        url:`${base_url}/api/v1/scriptfinish`,
-        form: {
-            token:'{{$token}}'
-        }
-    });
 })

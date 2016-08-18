@@ -17,6 +17,8 @@ Set FSO = CreateObject("Scripting.FileSystemObject")
 Dim oShell : Set oShell = CreateObject("WScript.Shell")
 oShell.Run "taskkill /im node.exe", , True
 
+WScript.Sleep 1000
+
 LegacyPath = "C:\visualiq\wfh"
 LegacyStartupPath = "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp\WFH.lnk"
 
@@ -28,6 +30,8 @@ If (FSO.FileExists(LegacyStartupPath)) Then
 End If
 'Here legacy wfh uninstallation is over
 
+WScript.Sleep 1000
+
 If (FSO.FolderExists(Path)) Then
 	FSO.DeleteFolder Path, True
 End If
@@ -35,6 +39,8 @@ If NOT (FSO.FolderExists("C:\visualiq")) Then
 	FSO.CreateFolder("C:\visualiq")
 End If
 FSO.CreateFolder(Path)
+
+WScript.Sleep 1000
 
 dim xHttp: Set xHttp = createobject("Microsoft.XMLHTTP")
 dim bStrm: Set bStrm = createobject("Adodb.Stream")
@@ -48,10 +54,17 @@ with bStrm
 	.savetofile ZipFile, 2
 end with
 
+WScript.Sleep 1000
+
 set objShell = CreateObject("Shell.Application")
 set FilesInZip=objShell.NameSpace(ZipFile).items
 objShell.NameSpace(Path).CopyHere(FilesInZip)
+
+WScript.Sleep 1000
+
 FSO.DeleteFile ZipFile
+
+WScript.Sleep 1000
 
 'write token
 Set objFSO=CreateObject("Scripting.FileSystemObject")
@@ -64,7 +77,7 @@ objFile.Close
 Set objFSO=CreateObject("Scripting.FileSystemObject")
 outFile=Path & "\start.vbs"
 Set objFile = objFSO.CreateTextFile(outFile,True)
-objFile.Write "CreateObject(""Wscript.Shell"").Run ""node.exe start.js"", 0, True"
+objFile.Write "CreateObject(""Wscript.Shell"").Run ""pinyourlocation.exe start.js"", 0, True"
 objFile.Close
 
 'create shortcut

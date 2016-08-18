@@ -11,7 +11,7 @@ use Carbon\Carbon;
 
 class ScriptController extends Controller
 {
-    public function scriptfinish(Request $request)
+    public function popupshowed(Request $request)
     {
         $this->validate($request, [
             'token' => 'required'
